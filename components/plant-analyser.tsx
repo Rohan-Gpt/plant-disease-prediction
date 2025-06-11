@@ -20,6 +20,7 @@ export default function PlantAnalyzer() {
         ...session,
         timestamp: new Date(session.timestamp),
       }));
+      console.log("Loaded sessions from localStorage:", parsedSessions);
       setSessions(parsedSessions);
 
       // Set current session to the most recent one, or create new if none exist

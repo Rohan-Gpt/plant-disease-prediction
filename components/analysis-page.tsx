@@ -82,11 +82,7 @@ export function AnalysisPage({
       );
 
       if (predictRes.data.error) {
-        onUpdateSession(session.id, {
-          error: predictRes.data.error,
-          isAnalyzing: false,
-        });
-        return;
+        throw new Error(predictRes.data.error);
       }
       if (predictRes.status != 200) {
         throw new Error("Failed to analyze image");
