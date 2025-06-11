@@ -81,6 +81,13 @@ export function AnalysisPage({
         { image: session.image } // send the base64 image directly
       );
 
+      if (predictRes.data.error) {
+        onUpdateSession(session.id, {
+          error: predictRes.data.error,
+          isAnalyzing: false,
+        });
+        return;
+      }
       if (predictRes.status != 200) {
         throw new Error("Failed to analyze image");
       }
