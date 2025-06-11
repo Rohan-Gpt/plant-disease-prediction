@@ -8,6 +8,9 @@ import { LoginSchema } from "@/schemas";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
+  session: {
+    strategy: "jwt", // Make sure this is set if using JWT
+  },
   providers: [
     Credentials({
       async authorize(credentials) {
@@ -30,6 +33,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
     Google,
   ],
+
+  callbacks: {
+    jwt({ token, user }) {
+      if (user) {
+        // User is available during sign-in
+        // console.log(token);
+        token.id = user.id;
+      }
+      return token;
+    },
+  },
+  secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/auth/login",
   },
