@@ -14,6 +14,7 @@ import {
   Camera,
   Loader2,
   Trash2,
+  ExternalLink,
 } from "lucide-react";
 import Image from "next/image";
 import type { AnalysisSession, AnalysisResult } from "@/types/analysis";
@@ -299,7 +300,18 @@ export function AnalysisPage({
                       Recommended Action
                     </h3>
                     <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                      <p className="text-blue-800">{session.result.remedy}</p>
+                      <a
+                        href={`https://www.google.com/search?tbm=shop&q=${session.result.remedy}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-blue-800"
+                      >
+                        <p className="text-blue-800 underline">
+                          {session.result.remedy}
+                        </p>
+
+                        <ExternalLink />
+                      </a>
                     </div>
                   </div>
                 </div>

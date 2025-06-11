@@ -1,7 +1,5 @@
 // app/api/predict/route.ts
 import { GoogleGenAI } from "@google/genai";
-import fs from "fs";
-import path from "path";
 import { NextRequest, NextResponse } from "next/server";
 import sharp from "sharp";
 
@@ -28,6 +26,10 @@ export async function POST(req: NextRequest) {
 
     const base64Image = body.image?.split(",")[1]; // Extract base64 data only
 
+    if (!base64Image) {
+      return NextResponse.json({ error: "No image provided" }, { status: 400 });
+    }
+
     const imageBuffer = Buffer.from(base64Image, "base64");
 
     // Resize using Sharp
@@ -38,9 +40,6 @@ export async function POST(req: NextRequest) {
 
     // Convert resized image to base64
     const resizedBase64Image = resizedBuffer.toString("base64");
-    if (!base64Image) {
-      return NextResponse.json({ error: "No image provided" }, { status: 400 });
-    }
 
     const contents = [
       {
@@ -70,7 +69,7 @@ Respond in strict JSON format like:
       contents,
     });
 
-    console.log("this is result text", result.text);
+    // console.log("this is result text", result.text);
 
     const text = result.text as string;
 
@@ -93,7 +92,7 @@ Respond in strict JSON format like:
 
     return NextResponse.json(parsed);
   } catch (error) {
-    console.error("Prediction failed:", error);
+    // console.error("Prediction failed:", error);
     return NextResponse.json({ error: "Prediction failed" }, { status: 500 });
   }
 }
