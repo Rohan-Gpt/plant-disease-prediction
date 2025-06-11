@@ -69,8 +69,8 @@ export function AnalysisPage({
       const response = await fetch(session.image);
       const blob = await response.blob();
 
-      const formData = new FormData();
-      formData.append("image", blob, "plant-image.jpg");
+      // const formData = new FormData();
+      // formData.append("image", blob, "plant-image.jpg");
 
       // const uploadRes = await axios.post("/api/upload", formData);
       // const uploadedPath = uploadRes.data.path; // use it immediately

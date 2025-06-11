@@ -3,6 +3,7 @@ import { GoogleGenAI } from "@google/genai";
 import fs from "fs";
 import path from "path";
 import { NextRequest, NextResponse } from "next/server";
+import sharp from "sharp";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 
@@ -27,6 +28,16 @@ export async function POST(req: NextRequest) {
 
     const base64Image = body.image?.split(",")[1]; // Extract base64 data only
 
+    const imageBuffer = Buffer.from(base64Image, "base64");
+
+    // Resize using Sharp
+    const resizedBuffer = await sharp(imageBuffer)
+      .resize({ width: 720 }) // Change dimensions as needed
+      .toFormat("jpeg")
+      .toBuffer();
+
+    // Convert resized image to base64
+    const resizedBase64Image = resizedBuffer.toString("base64");
     if (!base64Image) {
       return NextResponse.json({ error: "No image provided" }, { status: 400 });
     }
@@ -35,7 +46,7 @@ export async function POST(req: NextRequest) {
       {
         inlineData: {
           mimeType: "image/jpeg",
-          data: base64Image,
+          data: resizedBase64Image,
         },
       },
       {
@@ -61,7 +72,7 @@ Respond in strict JSON format like:
 
     console.log("this is result text", result.text);
 
-    const text = result.text as string; // Correctly access response text
+    const text = result.text as string;
 
     let cleanedText = text.trim();
 
