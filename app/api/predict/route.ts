@@ -8,20 +8,28 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 
 export async function POST(req: NextRequest) {
   try {
+    // const body = await req.text(); // Read raw text body
+    // // If the body is JSON, parse it
+
+    // if (!body) {
+    //   return NextResponse.json({ error: "Missing file path" }, { status: 400 });
+    // }
+
+    // // Safe resolution for local public folder
+    // const absolutePath = path.join(
+    //   process.cwd(),
+    //   "public",
+    //   body.replace(/^\/+/, "")
+    // );
+    // const base64Image = fs.readFileSync(absolutePath, "base64");
+
     const body = await req.json();
-    const { filePath } = body;
 
-    if (!filePath) {
-      return NextResponse.json({ error: "Missing file path" }, { status: 400 });
+    const base64Image = body.image?.split(",")[1]; // Extract base64 data only
+
+    if (!base64Image) {
+      return NextResponse.json({ error: "No image provided" }, { status: 400 });
     }
-
-    // Safe resolution for local public folder
-    const absolutePath = path.join(
-      process.cwd(),
-      "public",
-      filePath.replace(/^\/+/, "")
-    );
-    const base64Image = fs.readFileSync(absolutePath, "base64");
 
     const contents = [
       {
@@ -38,7 +46,11 @@ Respond in strict JSON format like:
   "disease": "Name of disease or 'healthy'",
   "confidence": 9.5(on a scale of 1-10),
   "remedy": "short remedy or 'none'"
-}`,
+}
+  and if it is not a plant, respond with:
+{
+  error: "Not a plant"
+  }`,
       },
     ];
 

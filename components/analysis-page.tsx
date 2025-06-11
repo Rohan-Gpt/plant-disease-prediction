@@ -72,12 +72,13 @@ export function AnalysisPage({
       const formData = new FormData();
       formData.append("image", blob, "plant-image.jpg");
 
-      const uploadRes = await axios.post("/api/upload", formData);
-      const uploadedPath = uploadRes.data.path; // use it immediately
+      // const uploadRes = await axios.post("/api/upload", formData);
+      // const uploadedPath = uploadRes.data.path; // use it immediately
 
-      const predictRes = await axios.post("/api/predict", {
-        filePath: uploadedPath, // correct key name
-      });
+      const predictRes = await axios.post(
+        "/api/predict",
+        { image: session.image } // send the base64 image directly
+      );
 
       if (predictRes.status != 200) {
         throw new Error("Failed to analyze image");
